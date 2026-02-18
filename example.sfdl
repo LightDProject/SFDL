@@ -1,0 +1,7 @@
+name = "my-server"
+port = 8080
+
+server "example" {
+  host = "localhost"
+  timeout = 30
+}
