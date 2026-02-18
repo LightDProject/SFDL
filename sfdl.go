@@ -1,6 +1,8 @@
 package sfdl
 
 import (
+	"fmt"
+
 	"github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
 )
@@ -56,6 +58,18 @@ func (p *Parser) Errs() hcl.Diagnostics {
 	return p.diags
 }
 
-func (f *File) SyntaxBody() *hclsyntax.Body {
-	return f.Body.(*hclsyntax.Body)
+func (f *File) SyntaxBody() (*hclsyntax.Body, error) {
+	body, ok := f.Body.(*hclsyntax.Body)
+	if !ok {
+		return nil, fmt.Errorf("body is not hclsyntax.Body")
+	}
+	return body, nil
+}
+
+func (f *File) MustSyntaxBody() *hclsyntax.Body {
+	body, err := f.SyntaxBody()
+	if err != nil {
+		panic(err)
+	}
+	return body
 }

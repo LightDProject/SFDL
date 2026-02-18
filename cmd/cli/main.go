@@ -34,7 +34,12 @@ func main() {
 
 	if *parse {
 		fmt.Println("Parsed successfully")
-		fmt.Printf("Attributes: %d\n", len(sfdlFile.SyntaxBody().Attributes))
-		fmt.Printf("Blocks: %d\n", len(sfdlFile.SyntaxBody().Blocks))
+		body, err := sfdlFile.SyntaxBody()
+		if err != nil {
+			fmt.Printf("Error getting body: %v\n", err)
+			os.Exit(1)
+		}
+		fmt.Printf("Attributes: %d\n", len(body.Attributes))
+		fmt.Printf("Blocks: %d\n", len(body.Blocks))
 	}
 }
