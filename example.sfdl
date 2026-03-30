@@ -3,16 +3,15 @@
 
 SFDL {
   required_providers {
-    webserver = {
-      source   = "git@example.com:sfdl-providers/webserver"
-      version  = "1.2.0"
-      fileHash = "sha256:a1b2c3d4e5f6"
+    example_for_source_code = {
+      source   = "git@example.com:example.org/example"
+      version  = "1.0.0"
+      fileHash = "sha256:abc123"
       needCompilation = true
     }
-    database = {
-      source   = "git@example.com:sfdl-providers/database"
-      version  = "2.0.1"
-      needCompilation = true
+    example_for_binary = {
+      source   = "https://example.com/example.elf"
+      fileHash = "sha256:def456"
     }
   }
 }
@@ -29,7 +28,7 @@ registry "artifact-hub" {
 registry "binary-mirror" {
   API_root = "https://mirrors.example.com/binary"
   public {
-    timeout = 30
+    retryPolicy = "exponential-backoff"
   }
 }
 
@@ -38,7 +37,7 @@ function "deploy-web" {
     env       = "string,default 'staging'"
     replicas  = "int,default = 1"
     port      = "int,default = 8080"
-    debug     = "bool,default false"
+    debug     = "bool,default = false"
   }
   output {
     status    = "string"
@@ -74,46 +73,6 @@ function "migrate-db" {
   }
 }
 
-provider "webserver" {
-  image = "nginx:1.25-alpine"
-  volumes = ["/data/www:/usr/share/nginx/html", "/etc/nginx.conf:/etc/nginx/nginx.conf:ro"]
-  health_check {
-    path     = "/health"
-    interval = 10
-    timeout  = 5
-  }
-  resources {
-    cpu    = "500m"
-    memory = "256Mi"
-  }
-}
-
-provider "database" {
-  engine   = "postgresql"
-  version  = "15"
-  database = "app_production"
-  user     = "admin"
-  password = "secret"
-  pool {
-    min = 5
-    max = 20
-  }
-  backup {
-    enable   = true
-    schedule = "0 3 * * *"
-    retention = 7
-  }
-}
-
-# Global server configuration
-name    = "production-web-01"
-domain  = "www.example.com"
-port    = 443
-enabled = true
-
-tags = ["production", "web", "high-availability"]
-
-regions = ["us-east-1", "us-west-2", "eu-central-1"]
 
 settings {
   log_level = "info"
