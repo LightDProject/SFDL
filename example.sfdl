@@ -34,7 +34,7 @@ registry "binary-mirror" {
 
 function "deploy-web" {
   input {
-    env       = "string,default 'staging'"
+    env       = "string,default = 'staging'"
     replicas  = "int,default = 1"
     port      = "int,default = 8080"
     debug     = "bool,default = false"
@@ -57,8 +57,8 @@ function "deploy-web" {
 
 function "migrate-db" {
   input {
-    direction = "string,default 'up'"
-    batch     = "int,default 100"
+    direction = "string,default = 'up'"
+    batch     = "int,default = 100"
   }
   output {
     migrated = "int"
